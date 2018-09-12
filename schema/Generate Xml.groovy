@@ -81,11 +81,11 @@ def baseXml(out, tableName, className, fields) {
     out.println "    </select>"
     fields.each() {
         String str = it.right
-        if (str.endsWith("_id")) {
+        if (str.endsWith("_id") && !str.equals("operater_id")) {
             def ForeignKey = javaName(it.right, true)
             def foreignKey = javaName(it.right, false)
             out.println ""
-            out.println "    <select id='selectBy${ForeignKey}' resultType='${packageName}.model.${className}Model' parameterType='java.lang.Long'>"
+            out.println "    <select id='selectBy${ForeignKey}' resultType='${packageName}.model.${className}' parameterType='java.lang.Long'>"
             out.println "        select "
             out.println "        <include refid='Base_Column_List' />"
             out.println "        from ${tableName} "
@@ -119,18 +119,29 @@ def baseXml(out, tableName, className, fields) {
     out.println "            <include refid='query_filter'/>"
     out.println "        </where>"
     out.println "    </select>"
-    out.println ""
-    if (propertiesContainField(isDeleteProperties, fields)) {
+    if (fieldsContainPropertie(isDeleteProperties[0], fields)) {
+        out.println ""
+        out.println "    <update id='deleteByPrimaryKey' parameterType='java.lang.Long'>"
+        out.println "        update ${tableName} set ${isDeleteProperties[0]} = 1 where id = #{id}"
+        out.println "    </update>"
+    } else {
+        out.println ""
         out.println "    <delete id='deleteByPrimaryKey' parameterType='java.lang.Long'>"
         out.println "        delete from ${tableName} where id = #{id}"
         out.println "    </delete>"
-        out.println ""
-    } else {
-        out.println "    <delete id='deleteByPrimaryKey' parameterType='java.lang.Long'>"
-        out.println "        update ${tableName} set ${isDeleteProperties[0]} = 1 where id = #{id}"
-        out.println "    </delete>"
-        out.println ""
     }
+    fields.each() {
+        String str = it.right
+        if (str.endsWith("_id") && !str.equals("operater_id")) {
+            def ForeignKey = javaName(it.right, true)
+            def foreignKey = javaName(it.right, false)
+            out.println ""
+            out.println "    <update id='deleteBy${ForeignKey}' parameterType='java.lang.Long'>"
+            out.println "        update ${tableName} set ${isDeleteProperties[0]} = 1 where ${it.right} = #{${foreignKey}}"
+            out.println "    </update>"
+        }
+    }
+    out.println ""
     out.println "    <select id='count' resultType='java.lang.Integer' parameterType='java.util.Map'>"
     out.println "        select count(*) from ${tableName}"
     out.println "        <where>"

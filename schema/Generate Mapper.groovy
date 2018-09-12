@@ -77,6 +77,21 @@ def baseMapper(out, className, tableComment, fields) {
     out.println "     * @return"
     out.println "     */"
     out.println "    Integer deleteByPrimaryKey(@Param(\"id\") Long id);"
+    fields.each() {
+        String str = it.right
+        if (str.endsWith("_id") && !str.equals("operater_id")) {
+            def ForeignKey = javaName(it.right, true)
+            def foreignKey = javaName(it.right, false)
+            out.println ""
+            out.println "    /**"
+            out.println "     * 通过${foreignKey}删除"
+            out.println "     *"
+            out.println "     * @param ${foreignKey}"
+            out.println "     * @return"
+            out.println "     */"
+            out.println "    Integer deleteBy${ForeignKey}(@Param(\"${foreignKey}\") Long ${foreignKey});"
+        }
+    }
     out.println ""
     out.println "    /**"
     out.println "     * 更新${tableComment}"
@@ -95,7 +110,7 @@ def baseMapper(out, className, tableComment, fields) {
     out.println "    ${className} selectByPrimaryKey(@Param(\"id\") Long id);"
     fields.each() {
         String str = it.right
-        if (str.endsWith("_id")) {
+        if (str.endsWith("_id") && !str.equals("operater_id")) {
             def ForeignKey = javaName(it.right, true)
             def foreignKey = javaName(it.right, false)
             out.println ""
@@ -105,7 +120,7 @@ def baseMapper(out, className, tableComment, fields) {
             out.println "     * @param ${foreignKey}"
             out.println "     * @return"
             out.println "     */"
-            out.println "    List<${className}Model> selectBy${ForeignKey}(@Param(\"${foreignKey}\") Long ${foreignKey});"
+            out.println "    List<${className}> selectBy${ForeignKey}(@Param(\"${foreignKey}\") Long ${foreignKey});"
         }
     }
     out.println ""
