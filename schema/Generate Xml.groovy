@@ -74,7 +74,7 @@ def baseXml(out, tableName, className, fields) {
     out.println "    </sql>"
     out.println ""
     out.println "    <select id='selectByPrimaryKey' resultType='${packageName}.model.${className}Model'"
-    out.println "            parameterType='java.util.Map'>"
+    out.println "            parameterType='java.lang.Long'>"
     out.println "        select "
     out.println "        <include refid='Base_Column_List'/>"
     out.println "        from ${tableName} "
@@ -97,7 +97,7 @@ def baseXml(out, tableName, className, fields) {
     }
     out.println ""
     out.println "    <select id='selectOneByQuery' resultType='${packageName}.model.${className}Model'"
-    out.println "            parameterType='java.util.Map'>"
+    out.println "            parameterType='${packageName}.model.${className}Model'>"
     out.println "        select "
     out.println "        <include refid='Base_Column_List'/>"
     out.println "        from ${tableName} "
@@ -108,7 +108,7 @@ def baseXml(out, tableName, className, fields) {
     out.println "    </select>"
     out.println ""
     out.println "    <select id='selectByQuery' resultType='${packageName}.model.${className}Model'"
-    out.println "            parameterType='java.util.Map'>"
+    out.println "            parameterType='${packageName}.model.${className}Model'>"
     out.println "        select "
     out.println "        <include refid='Base_Column_List'/>"
     out.println "        from ${tableName} "
@@ -147,7 +147,7 @@ def baseXml(out, tableName, className, fields) {
         }
     }
     if (propertiesContainField(isDeleteProperties, fields)) {
-        out.println "    <select id='deleteByQuery' parameterType='java.util.Map'>"
+        out.println "    <select id='deleteByQuery' parameterType='${packageName}.model.${className}Model'>"
         out.println "        delete from ${tableName}"
         out.println "        <where>"
         out.println "            <include refid='query_filter'/>"
@@ -155,7 +155,7 @@ def baseXml(out, tableName, className, fields) {
         out.println "    </delete>"
         out.println ""
     } else {
-        out.println "    <update id='deleteByQuery' parameterType='java.util.Map'>"
+        out.println "    <update id='deleteByQuery' parameterType='${packageName}.model.${className}Model'>"
         out.println "        update ${tableName} set ${tableName}.${isDeleteProperties[0]} = 1"
         out.println "        <where>"
         out.println "            <include refid='query_filter'/>"
@@ -163,7 +163,7 @@ def baseXml(out, tableName, className, fields) {
         out.println "    </update>"
         out.println ""
     }
-    out.println "    <select id='count' resultType='java.lang.Integer' parameterType='java.util.Map'>"
+    out.println "    <select id='count' resultType='java.lang.Integer' parameterType='${packageName}.model.${className}Model'>"
     out.println "        select count(*) from ${tableName}"
     out.println "        <where>"
     out.println "            <include refid='query_filter'/>"
@@ -200,7 +200,7 @@ def baseXml(out, tableName, className, fields) {
     out.println "        </trim>"
     out.println "    </insert>"
     out.println ""
-    out.println "    <update id='update' parameterType='java.util.Map'>"
+    out.println "    <update id='update' parameterType='${packageName}.model.${className}Model'>"
     out.println "        update ${tableName}"
     out.println "        <set>"
     fields.each() {
