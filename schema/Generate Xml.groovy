@@ -96,14 +96,6 @@ def baseXml(out, tableName, className, fields) {
         }
     }
     out.println ""
-    out.println "    <select id='getSelectBoxByQuery' resultType='${basePackageName}.core.common.SelectBox'"
-    out.println "            parameterType='java.util.Map'>"
-    out.println "        select ${tableName}.id as label, ${tableName}.id as value from ${tableName}"
-    out.println "        <where>"
-    out.println "            <include refid='query_filter'/>"
-    out.println "        </where>"
-    out.println "    </select>"
-    out.println ""
     out.println "    <select id='selectOneByQuery' resultType='${packageName}.model.${className}Model'"
     out.println "            parameterType='java.util.Map'>"
     out.println "        select "
