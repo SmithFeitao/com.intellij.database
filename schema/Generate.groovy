@@ -83,26 +83,16 @@ def generate(table, dir) {
 
 
     def mapperDir = dir.toString() + sepa + "mapper" + sepa
-    def baseMapperDir = dir.toString() + sepa + "mapper" + sepa + "base" + sepa
-    def baseMapperFile = new File(baseMapperDir)
-    baseMapperFile.mkdirs()
-    new File(baseMapperDir, className + "BaseMapper.java").withPrintWriter { out -> baseMapper(out, className, paramName, tableComment, fields) }
-    def mapperFile = new File(mapperDir, className + "Mapper.java")
-    if (!mapperFile.exists()) {
-        mapperFile.withPrintWriter { out -> mapper(out, className, fields) }
-    }
+    def mapperFile = new File(mapperDir)
+    mapperFile.mkdirs()
+    new File(mapperDir, className + "Mapper.java").withPrintWriter { out -> mapper(out, className, paramName, tableComment, fields) }
 
 
 
     def xmlDir = dir.toString().substring(0, index + 10) + sepa + "resources" + sepa + "mapper" + sepa
-    def baseXmlDir = dir.toString().substring(0, index + 10) + sepa + "resources" + sepa + "mapper" + sepa + "base" + sepa
-    def baseXmlFile = new File(baseXmlDir)
-    baseXmlFile.mkdirs()
-    new File(baseXmlDir, className + "BaseMapper.xml").withPrintWriter { out -> baseXml(out, tableName, className, fields) }
-    def xmlFile = new File(xmlDir, className + "Mapper.xml")
-    if (!xmlFile.exists()) {
-        xmlFile.withPrintWriter { out -> xml(out, tableName, className, fields) }
-    }
+    def xmlFile = new File(xmlDir)
+    xmlFile.mkdirs()
+    new File(xmlDir, className + "Mapper.xml").withPrintWriter { out -> xml(out, tableName, className, fields) }
 }
 
 def model(out, className, tableComment, fields) {
@@ -155,8 +145,8 @@ def model(out, className, tableComment, fields) {
     out.println "}"
 }
 
-def baseMapper(out, className, paramName, tableComment, fields) {
-    out.println "package ${packageName}.mapper.base;"
+def mapper(out, className, paramName, tableComment, fields) {
+    out.println "package ${packageName}.mapper;"
     out.println ""
     out.println "import ${packageName}.model.${className}Model;"
     out.println "import org.apache.ibatis.annotations.Param;"
@@ -164,7 +154,7 @@ def baseMapper(out, className, paramName, tableComment, fields) {
     out.println "import java.util.List;"
     out.println "import java.util.Map;"
     out.println ""
-    out.println "public interface ${className}BaseMapper {"
+    out.println "public interface ${className}Mapper {"
     out.println ""
     out.println "    /**"
     out.println "     * 新增${tableComment}"
@@ -263,23 +253,11 @@ def baseMapper(out, className, paramName, tableComment, fields) {
     out.println "}"
 }
 
-def mapper(out, className, fields) {
-    out.println "package ${packageName}.mapper;"
-    out.println ""
-    out.println "import ${packageName}.mapper.base.${className}BaseMapper;"
-    out.println "import org.apache.ibatis.annotations.Mapper;"
-    out.println ""
-    out.println "@Mapper"
-    out.println "public interface ${className}Mapper extends ${className}BaseMapper {"
-    out.println ""
-    out.println "}"
-}
-
-def baseXml(out, tableName, className, fields) {
+def xml(out, tableName, className, fields) {
     int index = 0
     out.println "<?xml version='1.0' encoding='UTF-8' ?>"
     out.println "<!DOCTYPE mapper PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN' 'http://mybatis.org/dtd/mybatis-3-mapper.dtd' >"
-    out.println "<mapper namespace='${packageName}.mapper.base.${className}BaseMapper'>"
+    out.println "<mapper namespace='${packageName}.mapper.${className}Mapper'>"
     out.println ""
     out.println "    <sql id='Base_Column_List'>"
     out.print "    "
@@ -444,14 +422,6 @@ def baseXml(out, tableName, className, fields) {
         }
     }
     out.println "    </sql>"
-    out.println ""
-    out.println "</mapper>"
-}
-
-def xml(out, tableName, className, fields) {
-    out.println "<?xml version='1.0' encoding='UTF-8' ?>"
-    out.println "<!DOCTYPE mapper PUBLIC '-//mybatis.org//DTD Mapper 3.0//EN' 'http://mybatis.org/dtd/mybatis-3-mapper.dtd' >"
-    out.println "<mapper namespace='${packageName}.mapper.${className}Mapper'>"
     out.println ""
     out.println "</mapper>"
 }
