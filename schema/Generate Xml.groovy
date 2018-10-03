@@ -71,12 +71,15 @@ def xml(out, tableName, className, fields) {
     out.println "        <constructor>"
     fields.each() {
         if (propertiesContainField(it, idProperties)) {
-            out.println "            <idArg column='${it.colName}' name = '${it.javaName}' javaType='${it.parameterType}'/>"
-        } else {
-            out.println "            <arg column='${it.colName}' name = '${it.javaName}' javaType='${it.parameterType}'/>"
+            out.println "            <idArg column='${it.colName}' javaType='${it.parameterType}'/>"
+        }else {
+            out.println "            <arg column='${it.colName}' javaType='${it.parameterType}'/>"
         }
     }
     out.println "        </constructor>"
+    fields.each() {
+        out.println "        <result property='${it.javaName}' column='${it.colName}'/>"
+    }
     out.println "    </resultMap>"
     out.println ""
     out.println "    <sql id='Base_Column_List'>"
@@ -157,7 +160,7 @@ def xml(out, tableName, className, fields) {
                 out.println "    </update>"
                 out.println ""
             } else {
-                out.println "    <delete id='deleteByPrimaryKey' parameterType='java.lang.Long'>"
+                out.println "    <delete id='deleteBy${ForeignKey}' parameterType='java.lang.Long'>"
                 out.println "        delete from ${tableName} where ${tableName}.${it.colName} = #{${foreignKey}}"
                 out.println "    </delete>"
                 out.println ""
@@ -251,7 +254,7 @@ boolean fieldsContainProperties(properties, fields) {
     properties.each() {
         def property = it
         fields.each() {
-            if (property == it.right) {
+            if (property == it.colName) {
                 exist = true
             }
         }
@@ -262,7 +265,7 @@ boolean fieldsContainProperties(properties, fields) {
 boolean propertiesContainField(field, properties) {
     def exist = false
     properties.each() {
-        if (field.right == it) {
+        if (field.colName == it) {
             exist = true
         }
     }
